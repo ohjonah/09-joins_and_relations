@@ -33,7 +33,7 @@ app.get('/articles', function(request, response) {
     response.send(result.rows);
   })
   .catch(function(err) {
-    console.error(err)
+    console.error(err);
   });
 });
 
@@ -43,10 +43,10 @@ app.post('/articles', function(request, response) {
     // DONE: Write a SQL query to insert a new author, ON CONFLICT DO NOTHING
     [request.body.author, request.body.authorUrl], // DONE: Add the author and "authorUrl" as data for the SQL query
     function(err) {
-      if (err) console.error(err)
-      queryTwo() // This is our second query, to be executed when this first query is complete.
+      if (err) console.error(err);
+      queryTwo(); // This is our second query, to be executed when this first query is complete.
     }
-  )
+  );
 
   function queryTwo() {
     client.query(
@@ -56,10 +56,10 @@ app.post('/articles', function(request, response) {
       [request.body.author],
       // DONE: Add the author name as data for the SQL query
       function(err, result) {
-        if (err) console.error(err)
-        queryThree(result.rows[0].author_id) // This is our third query, to be executed when the second is complete. We are also passing the author_id into our third query
+        if (err) console.error(err);
+        queryThree(result.rows[0].author_id); // This is our third query, to be executed when the second is complete. We are also passing the author_id into our third query
       }
-    )
+    );
   }
 
   function queryThree(author_id) {
@@ -79,24 +79,28 @@ app.put('/articles/:id', function(request, response) {
   // an author_id property, so we can reference it from the request.body.
   // TODO: Add the required values from the request as data for the SQL query to interpolate
   client.query(
-    ``,
-    []
+    `UPDATE authors
+    SET author = $1, "authorUrl" = $2
+    WHERE author_id = $3`,
+    [request.body.author, request.body.authorUrl, request.body.author_id]
   )
   .then(function() {
     // TODO: Write a SQL query to update an article record. Keep in mind that article records
     // now have an author_id, in addition to title, category, publishedOn, and body.
     // TODO: Add the required values from the request as data for the SQL query to interpolate
     client.query(
-      ``,
-      []
-    )
+      `UPDATE articles
+      SET title = $2, category = $3, "publishedOn" = $4, body = $5
+      WHERE author_id = $1;`,
+      [request.body.author_id, request.body.title, request.body.category, request.body.publishedOn, request.body.body]
+    );
   })
   .then(function() {
     response.send('Update complete');
   })
   .catch(function(err) {
     console.error(err);
-  })
+  });
 });
 
 app.delete('/articles/:id', function(request, response) {
