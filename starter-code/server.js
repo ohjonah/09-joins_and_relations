@@ -82,7 +82,7 @@ app.put('/articles/:id', function(request, response) {
   client.query(
     `UPDATE authors
     SET author = $1, "authorUrl" = $2
-    WHERE author_id = $3`,
+    WHERE article_id = $3`,
     [request.body.author, request.body.authorUrl, request.params.id]
   )
   .then(function() {
