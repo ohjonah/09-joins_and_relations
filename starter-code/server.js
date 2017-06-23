@@ -82,8 +82,8 @@ app.put('/articles/:id', function(request, response) {
   client.query(
     `UPDATE authors
     SET author = $1, "authorUrl" = $2
-    WHERE article_id = $3`,
-    [request.body.author, request.body.authorUrl, request.params.id]
+    WHERE author_id = $3`,
+    [request.body.author, request.body.authorUrl, request.body.author_id]
   )
   .then(function() {
     // TODO: Write a SQL query to update an article record. Keep in mind that article records
@@ -92,8 +92,8 @@ app.put('/articles/:id', function(request, response) {
     client.query(
       `UPDATE articles
       SET title = $2, category = $3, "publishedOn" = $4, body = $5
-      WHERE author_id = $1;`,
-      [request.body.author_id, request.body.title, request.body.category, request.body.publishedOn, request.body.body]
+      WHERE article_id = $1;`,
+      [request.params.id, request.body.title, request.body.category, request.body.publishedOn, request.body.body]
     );
   })
   .then(function() {
